@@ -1,5 +1,4 @@
 from queue import Queue
-from threading import Thread
 from time import time
 import psycopg2
 import redis
@@ -29,7 +28,7 @@ def run_migration():
     procs.append(proc)
     
     #records per cursor fetch
-    chunk_size = 10000
+    chunk_size = 20000
     cur = conn.cursor(name="my_cursor_name")  
     query = "select * from pgbench_accounts"
     cur.execute(query)
