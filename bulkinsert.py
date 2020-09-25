@@ -16,6 +16,8 @@ def run(records,start_time):
 
 def run_migration():
     print("starting migration: # of cpus " + str(mp.cpu_count()))
+    
+    #connect to postgres
     conn = psycopg2.connect(database="postgres",user = "postgres", password = '', host = "localhost", port = "5432")
     print("connected to PG")
     
