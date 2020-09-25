@@ -1,4 +1,3 @@
-from queue import Queue
 from time import time
 import psycopg2
 import redis
@@ -15,15 +14,13 @@ def run(records,start_time):
     rp.execute()
     print("---Worker done %s seconds for loop ---" % (time.time() - start_time))
 
-
 def run_migration():
     print("starting migration: # of cpus " + str(mp.cpu_count()))
     conn = psycopg2.connect(database="postgres",user = "postgres", password = '', host = "localhost", port = "5432")
     print("connected to PG")
-
-    procs = []
+    
     #records per cursor fetch
-    chunk_size = 20000
+    chunk_size = 50000
     cur = conn.cursor(name="my_cursor_name")  
     query = "select * from pgbench_accounts"
     cur.execute(query)
@@ -36,13 +33,11 @@ def run_migration():
         if not records:
             break
         proc = mp.Process(target=run, args=(records,start_time,))
-        procs.append(proc)
         proc.start()
     
     #clean up
     cur.close()
     conn.close()
-
-    print("---Script done,  %s seconds ---" % (time.time() - start_time))
+    print("---Script done, waiting for workers:  %s seconds ---" % (time.time() - start_time))
     
 run_migration()
