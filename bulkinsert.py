@@ -20,13 +20,8 @@ def run_migration():
     print("starting migration: # of cpus " + str(mp.cpu_count()))
     conn = psycopg2.connect(database="postgres",user = "postgres", password = '', host = "localhost", port = "5432")
     print("connected to PG")
-    
-    #mp set up
-    queue = mp.Queue()
+
     procs = []
-    proc = mp.Process(target=run)
-    procs.append(proc)
-    
     #records per cursor fetch
     chunk_size = 20000
     cur = conn.cursor(name="my_cursor_name")  
