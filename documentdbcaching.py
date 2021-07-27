@@ -2,7 +2,6 @@ from flask import Flask, request, jsonify, make_response
 import os
 import rediscluster
 import pymongo
-import pickle
 import json
 import time
 import random
@@ -56,7 +55,7 @@ def searchCollections(collection, column_type, value, cache_hit="yes", cache_end
     else:
         query = {column_type : {"$regex": "^" + value}}
         ddb_data, docdb_end_time = search_collection_from_ddb(docdb_collection, query)
-        cacheObject(key,ddb_data)
+        cache_object(key,ddb_data)
         return searchCollections(collection, column_type, value, cache_hit="no", cache_end_time=0, db_end_time=docdb_end_time)
 
 @app.route('/searchDocDB/<collection>/<column_type>/<value>')
@@ -86,7 +85,7 @@ def search_collection_from_ddb(docdb_collection, query):
     docdb_end_time = time.perf_counter() - db_start_time
     return stored_data, docdb_end_time
     
-def cacheObject(key, data):
+def cache_object(key, data):
     return r.set(key, data)
   
 
